@@ -350,3 +350,47 @@ html,body{
       transform: translateX(-100%);
     }
  }
+ footer{
+   margin-top: 10%;
+ }
+ .main_father{
+   display: flex;
+   justify-content: center;
+ }
+ .main_footer{
+   margin-top: 2%;
+   width: 70%;
+   height: 50vh;
+   display: flex;
+   justify-content: space-between;
+ }
+ .head{
+font-size: 16px;
+font-weight: 500;
+display: flex;
+row-gap: 4vw;
+ }
+ .heading_footer{
+  
+ }
+ .sec1 h4{
+   /* font-size: 2vw; */
+ }
+ 
+ footer h1{
+   font-size: 6vw;
+   /* margin-top: 10%; */
+   margin-left: 17%;
+   text-transform: uppercase;
+   letter-spacing: 1px;
+ }
+ footer h1:hover{
+   -webkit-text-stroke: 1px #fff;
+   color: transparent;
+ }
+ footer i{
+   font-size: 8vw;
+   -webkit-text-stroke: 1px #fff;
+   color: transparent;
+ }
+
