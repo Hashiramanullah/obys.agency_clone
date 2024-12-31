@@ -1,3 +1,44 @@
+function locoMotive() {
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Select the container for Locomotive Scroll
+    const scrollContainer = document.querySelector("#demiMain");
+
+    if (!scrollContainer) {
+        console.error("#demiMain element not found!");
+        return;
+    }
+
+    // Initialize Locomotive Scroll
+    const locoScroll = new LocomotiveScroll({
+        el: scrollContainer,
+        smooth: true,
+    });
+
+    // Sync Locomotive Scroll with ScrollTrigger
+    locoScroll.on("scroll", ScrollTrigger.update);
+
+    ScrollTrigger.scrollerProxy(scrollContainer, {
+        scrollTop(value) {
+            return arguments.length
+                ? locoScroll.scrollTo(value, 0, 0)
+                : locoScroll.scroll.instance.scroll.y;
+        },
+        getBoundingClientRect() {
+            return {
+                top: 0,
+                left: 0,
+                width: window.innerWidth,
+                height: window.innerHeight,
+            };
+        },
+        pinType: scrollContainer.style.transform ? "transform" : "fixed",
+    });
+
+    ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
+    ScrollTrigger.refresh();
+}
+
 const loadingAnimation = () => {
     const timeline = gsap.timeline();
 
@@ -28,7 +69,7 @@ const loadingAnimation = () => {
     const startCounter = () => {
         const counter = document.querySelector(".line1-part-1 h5");
         const loader = document.querySelector("#loader");
-        const mainDiv = document.querySelector("#main");
+        const demiMainDiv = document.querySelector("#demiMain");
 
         if (counter) {
             let grow = 0;
@@ -43,10 +84,10 @@ const loadingAnimation = () => {
                             duration: 0.5,
                             onComplete: () => {
                                 loader.style.display = "none"; // Hide loader
-                                if (mainDiv) {
-                                    mainDiv.style.display = "block"; // Show main content
+                                if (demiMainDiv) {
+                                    demiMainDiv.style.display = "block"; // Show demiMain content
                                     gsap.fromTo(
-                                        mainDiv,
+                                        demiMainDiv,
                                         { opacity: 0, y: 100 },
                                         { opacity: 1, y: 0, duration: 0.9 }
                                     );
@@ -108,3 +149,4 @@ Shery.makeMagnet("#nav h5" /* Element to target.*/, {
 loadingAnimation();
 headingAnimation();
 cursorAnimation();
+locoMotive();
