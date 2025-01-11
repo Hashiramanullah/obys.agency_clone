@@ -1,152 +1,70 @@
-function locoMotive() {
+let loader = document.querySelector('#loader');
+let main = document.querySelector("#main");
+
+function LocoMotive() {
     gsap.registerPlugin(ScrollTrigger);
 
-    // Select the container for Locomotive Scroll
-    const scrollContainer = document.querySelector("#demiMain");
-
-    if (!scrollContainer) {
-        console.error("#demiMain element not found!");
-        return;
-    }
-
-    // Initialize Locomotive Scroll
+    // Using Locomotive Scroll
     const locoScroll = new LocomotiveScroll({
-        el: scrollContainer,
-        smooth: true,
+        el: document.querySelector(".man"),
+        smooth: true
     });
 
     // Sync Locomotive Scroll with ScrollTrigger
     locoScroll.on("scroll", ScrollTrigger.update);
 
-    ScrollTrigger.scrollerProxy(scrollContainer, {
+    // Setup ScrollTrigger proxy for Locomotive Scroll
+    ScrollTrigger.scrollerProxy(".man", {
         scrollTop(value) {
-            return arguments.length
-                ? locoScroll.scrollTo(value, 0, 0)
-                : locoScroll.scroll.instance.scroll.y;
+            return arguments.length ? locoScroll.scrollTo(value, 0, 0) : locoScroll.scroll.instance.scroll.y;
         },
         getBoundingClientRect() {
-            return {
-                top: 0,
-                left: 0,
-                width: window.innerWidth,
-                height: window.innerHeight,
-            };
+            return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
         },
-        pinType: scrollContainer.style.transform ? "transform" : "fixed",
+        pinType: document.querySelector(".man").style.transform ? "transform" : "fixed"
     });
-
-    ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
-    ScrollTrigger.refresh();
 }
 
-const loadingAnimation = () => {
-    const timeline = gsap.timeline();
+function Loader() {
+    let tl = gsap.timeline();  // Timeline initialization
+    tl.from(".line h1", {
+        y: 150,
+        stagger: 0.1,
+        duration: 0.4,
+        delay: 0.3
+    });
+}
 
-    // Animate Loader and Associated Elements
-    timeline
-        .from("#loader", {
-            opacity: 0.5,
-            y: 100,
-            duration: 1,
-        })
-        .from("#loader h1", {
-            opacity: 0.5,
-            y: 100,
-            duration: 0.8,
-        }, "-=0.5") // Overlap animation timing
-        .from(".line1-part-1", {
-            opacity: 0.5,
-            y: 100,
-            duration: 0.8,
-        }, "-=0.5")
-        .from(".line .now", {
-            opacity: 0.5,
-            y: 100,
-            duration: 0.8,
-        }, "-=0.5");
+function MainAnimation() {
+    main.style.display = 'block';  // Show main content after loader
+    let tl = gsap.timeline();  // Initialize timeline for main animation
+    tl.from("#main", {
+        y: 150,
+        stagger: 0.1,
+        duration: 0.4,
+        delay: 0.3,
+    });
+}
 
-    // Counter Animation Logic
-    const startCounter = () => {
-        const counter = document.querySelector(".line1-part-1 h5");
-        const loader = document.querySelector("#loader");
-        const demiMainDiv = document.querySelector("#demiMain");
+function Counter() {
+    let h5 = document.querySelector('.line1-part-1 h5');
+    let grow = 0;
 
-        if (counter) {
-            let grow = 0;
-            const interval = setInterval(() => {
-                counter.innerHTML = grow++;
-                if (grow > 100) {
-                    clearInterval(interval);
-
-                    if (loader) {
-                        gsap.to(loader, {
-                            opacity: 0,
-                            duration: 0.5,
-                            onComplete: () => {
-                                loader.style.display = "none"; // Hide loader
-                                if (demiMainDiv) {
-                                    demiMainDiv.style.display = "block"; // Show demiMain content
-                                    gsap.fromTo(
-                                        demiMainDiv,
-                                        { opacity: 0, y: 100 },
-                                        { opacity: 1, y: 0, duration: 0.9 }
-                                    );
-                                }
-                            },
-                        });
-                    }
-                }
-            }, 15);
+    setInterval(function() {
+        if (grow < 100) {
+            h5.textContent = grow++;
+            if (grow == 100) {
+                loader.style.display = 'none'; // Hide loader
+                MainAnimation(); // Trigger main animation
+            }
         } else {
-            console.error("Counter element not found!");
+            h5.textContent = grow;
         }
-    };
+    }, 35);
+}
 
-    // Run counter after the animations
-    timeline.call(startCounter);
-};
-
-const headingAnimation = () => {
-    const timeline = gsap.timeline();
-
-    // Fade out and fade in with sequential animations
-    timeline
-        .to(".hero", {
-            opacity: 0,
-        })
-        .from(".hero", {
-            opacity: 2,
-        })
-        .from(".heading h1", {
-            opacity: 0,
-            stagger: 0.2,
-            y: -100,
-            duration: 1,
-        }, "-=0.5");
-};
-
-const cursorAnimation = () => {
-    const cursor = document.querySelector("#cursor");
-    if (cursor) {
-        document.addEventListener("mousemove", (event) => {
-            gsap.to(cursor, {
-                left: event.pageX,
-                top: event.pageY,
-                duration: 0.1,
-            });
-        });
-    } else {
-        console.error("Cursor element not found!");
-    }
-};
-
-
-Shery.makeMagnet("#nav h5" /* Element to target.*/, {
-    ease: "cubic-bezier(0.23, 1, 0.320, 1)",
-    duration: 0.2,
-  });
-// Initialize Animations
-loadingAnimation();
-headingAnimation();
-cursorAnimation();
-locoMotive();
+document.addEventListener('DOMContentLoaded', () => {
+    LocoMotive();
+    Loader();
+    Counter();
+});
