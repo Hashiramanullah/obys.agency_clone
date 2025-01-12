@@ -1,6 +1,14 @@
 let loader = document.querySelector('#loader');
 let main = document.querySelector("#main");
 
+
+function NavMagnet(){
+    Shery.makeMagnet(".menu h5" /* Element to target.*/, {
+        //Parameters are optional.
+        ease: "cubic-bezier(0.23, 1, 0.320, 1)",
+        duration: 1,
+      });
+}
 function LocoMotive() {
     gsap.registerPlugin(ScrollTrigger);
 
@@ -63,8 +71,20 @@ function Counter() {
     }, 35);
 }
 
+function sheryAnimation(){
+    Shery.imageEffect(".image-div",{
+        style:5,
+        debug:true,
+        gooey:true
+    })
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     LocoMotive();
     Loader();
     Counter();
+    NavMagnet()
 });
+
+sheryAnimation()
+
